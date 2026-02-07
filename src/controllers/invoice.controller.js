@@ -1,5 +1,5 @@
 
-import puppeteer from "puppeteer";
+import puppeteer, { install } from "puppeteer";
 import { Invoice } from "../models/Invoice.js";
 import {
     getInvoice, getPaginationParams, sendResponse, getTotalCount, generateInvoiceNumber
@@ -45,8 +45,6 @@ export const createInvoice = async (req, res) => {
         await invoice.save();
         sendResponse(res, { data: [] });
     } catch (err) {
-        console.log("Cache dir:", process.env.PUPPETEER_CACHE_DIR);
-        console.log("Chrome path:", await puppeteer.executablePath());
         console.log(err);
         res.status(500).json({ error: "Failed to create invoice" });
     }
@@ -146,6 +144,8 @@ export const pdfDownload = async (req, res) => {
 
         const html = invoiceTemplate({ user, invoice });
 
+        await install({ browser: "chrome" });
+
         // Launch Puppeteer
         const browser = await puppeteer.launch({
             headless: "new", // ✅ fix for newer Puppeteer
@@ -167,6 +167,8 @@ export const pdfDownload = async (req, res) => {
         });
         res.send(pdfBuffer);
     } catch (err) {
+        console.log("Cache dir:", process.env.PUPPETEER_CACHE_DIR);
+        console.log("Chrome path:", await puppeteer.executablePath());
         console.error(err);
         res.status(500).json({ error: "Failed to generate PDF" });
     }

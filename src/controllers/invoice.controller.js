@@ -9,6 +9,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { User } from "../models/User.js";
 
+process.env.PUPPETEER_CACHE_DIR = "/tmp/puppeteer";
+
 // Create invoice
 export const createInvoice = async (req, res) => {
     try {
@@ -43,6 +45,8 @@ export const createInvoice = async (req, res) => {
         await invoice.save();
         sendResponse(res, { data: [] });
     } catch (err) {
+        console.log("Cache dir:", process.env.PUPPETEER_CACHE_DIR);
+        console.log("Chrome path:", await puppeteer.executablePath());
         console.log(err);
         res.status(500).json({ error: "Failed to create invoice" });
     }
@@ -114,7 +118,7 @@ export function calculateTotalItems(invoice, calculatedItems) {
     const advancePaid = invoice.advancePaid || 0;
     const balanceDue = grandTotal - advancePaid;
 
-    return {totalDiscount, subTotal, extraChargeAmount, taxableAmount, gstAmount, grandTotal, advancePaid, balanceDue}
+    return { totalDiscount, subTotal, extraChargeAmount, taxableAmount, gstAmount, grandTotal, advancePaid, balanceDue }
 }
 
 export const pdfDownload = async (req, res) => {

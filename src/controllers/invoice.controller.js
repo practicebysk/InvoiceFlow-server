@@ -1,5 +1,5 @@
 
-import puppeteer, { install } from "puppeteer";
+import puppeteer from "puppeteer";
 import { Invoice } from "../models/Invoice.js";
 import {
     getInvoice, getPaginationParams, sendResponse, getTotalCount, generateInvoiceNumber
@@ -144,7 +144,7 @@ export const pdfDownload = async (req, res) => {
 
         const html = invoiceTemplate({ user, invoice });
 
-        await install({ browser: "chrome" });
+        // await install({ browser: "chrome" });
 
         // Launch Puppeteer
         const browser = await puppeteer.launch({

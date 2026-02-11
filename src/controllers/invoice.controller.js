@@ -8,6 +8,7 @@ import invoiceTemplate from "../templates/invoice.template.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { User } from "../models/User.js";
+import fs from 'fs';
 
 // Create invoice
 export const createInvoice = async (req, res) => {

@@ -1,5 +1,5 @@
 
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import { Invoice } from "../models/Invoice.js";
 import {
     getInvoice, getPaginationParams, sendResponse, getTotalCount, generateInvoiceNumber
@@ -8,8 +8,6 @@ import invoiceTemplate from "../templates/invoice.template.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { User } from "../models/User.js";
-
-process.env.PUPPETEER_CACHE_DIR = "/tmp/puppeteer";
 
 // Create invoice
 export const createInvoice = async (req, res) => {
@@ -148,6 +146,7 @@ export const pdfDownload = async (req, res) => {
 
         // Launch Puppeteer
         const browser = await puppeteer.launch({
+            executablePath: "/usr/bin/chromium",
             headless: "new", // ✅ fix for newer Puppeteer
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
         });
@@ -167,8 +166,7 @@ export const pdfDownload = async (req, res) => {
         });
         res.send(pdfBuffer);
     } catch (err) {
-        console.log("Cache dir:", process.env.PUPPETEER_CACHE_DIR);
-        console.log("Chrome path:", await puppeteer.executablePath());
+        console.log("fs check:", fs.existsSync("/usr/bin/chromium"));
         console.error(err);
         res.status(500).json({ error: "Failed to generate PDF" });
     }

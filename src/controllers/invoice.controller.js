@@ -147,8 +147,8 @@ export const pdfDownload = async (req, res) => {
 
         // Launch Puppeteer
         const browser = await puppeteer.launch({
-            executablePath: "/usr/bin/chromium",
-            headless: "new", // ✅ fix for newer Puppeteer
+            executablePath: "/usr/bin/chromium-browser",
+            headless: true, // ✅ fix for newer Puppeteer
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
         });
         const page = await browser.newPage();
